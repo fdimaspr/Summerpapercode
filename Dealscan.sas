@@ -126,8 +126,7 @@ data _facility4; set _facility3;
 run; 
 
 
-
-*additional filter can be placed to restrict the loans to levered loans.
+*additional filter can be placed to restrict the loans to levered loans. Such as reducing 
 
 
 *save facilities in dimmod.;

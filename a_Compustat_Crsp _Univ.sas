@@ -19,7 +19,6 @@ OUTPUT:
 	should be done by ldatadate.  
 */
 
-
 *include macros;
 %include 'C:\Users\penarome\Desktop\Academic\UNCPP2HL\Scripts\macros.sas';
 %include 'C:\ado\plus\s\stata_wrapper.sas'
@@ -163,11 +162,7 @@ proc sort data=_compa out=dimmod.compcrsp;
 by gvkey datadate;
 run;
 
-
-
-
 * Generage a lagged version of the compustat crsp universe;
-
 
 proc sort data=dimmod.compcrsp; by gvkey descending datadate;
 run;
@@ -183,16 +178,12 @@ data dimmod.Lcompcrsp; set dimmod.Lcompcrsp;
 if missing(ldatadate) then delete;
 run;
 
-
 *clean the house;
 libname rawcomp clear;
 
 proc datasets lib=work memtype=data nolist;
 delete _: ;
 quit;
-
-
-
 
 /*just to contrast whether my compustat-crsp universe is consistent with prior literature, I look at how many distinct gvkeys I get per year
 	(numbers are very reasonable - minor differences with http://gridgreed.blogspot.com.es/2012/12/on-merging-crsp-and-compustat-data.html)
