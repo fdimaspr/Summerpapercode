@@ -1,0 +1,150 @@
+1                                                          The SAS System                             14:32 Wednesday, June 17, 2015
+
+NOTE: Unable to open SASUSER.REGSTRY. WORK.REGSTRY will be opened instead.
+NOTE: All registry changes will be lost at the end of the session.
+
+WARNING: Unable to copy SASUSER registry to WORK registry. Because of this, you will not see registry customizations during this 
+         session.
+NOTE: Unable to open SASUSER.PROFILE. WORK.PROFILE will be opened instead.
+NOTE: All profile changes will be lost at the end of the session.
+NOTE: Copyright (c) 2002-2012 by SAS Institute Inc., Cary, NC, USA. 
+NOTE: SAS (r) Proprietary Software 9.4 (TS1M1) 
+      Licensed to UNIVERSITY OF NORTH CAROLINA CHAPEL HILL - SFA T&R, Site 70084277.
+NOTE: This session is executing on the X64_7PRO  platform.
+
+
+
+NOTE: Updated analytical products:
+      
+      SAS/STAT 13.1
+      SAS/ETS 13.1
+      SAS/OR 13.1
+      SAS/IML 13.1
+      SAS/QC 13.1
+
+NOTE: Additional host information:
+
+ X64_7PRO WIN 6.1.7601 Service Pack 1 Workstation
+
+NOTE: SAS initialization used:
+      real time           0.49 seconds
+      cpu time            0.40 seconds
+      
+1          /*
+2          
+3          AUTHOR:          F. Dimas Pena Romera
+4          START DATE:      27/12/14
+5          LAST MODIFIED:   08/01/15	
+6          PURPOSE: Download selected COMPUSTAT VARIABLES from Compustat annual file, merge with
+6        ! crsp permno using wrds linkfile and
+7          for selected YEARS, merge with CRSP using merge link and SELECTED LINKS, spit
+7        ! Compustat-Crsp Universe
+8          
+9          INPUT:
+10         	1. location of raw compustat and linkfile after rawcomp.
+11         	2. location of destination merged file after dimmod.
+12         	3. location of descriptives (number of unique gvkeys linked per year in a csv file).
+13         	4. beg fyear and end fyear after.
+14         	5. variables requested from compustat annual.
+15         
+16         OUTPUT:
+17         	1. dimmod.filename = compustat-crsp merged file with requested compustat variables.
+18         	2. dimmod.lfilename = compustat crsp merged file with requested variables, all lagged
+18       !  one fiscal year, subsequent merge
+19         	should be done by ldatadate.
+20         */
+2                                        The SAS System            14:32 Wednesday, June 17, 2015
+
+21         
+22         
+23         *include macros;
+24         %include 'C:\Users\penarome\Desktop\Academic\UNCPP2HL\Scripts\macros.sas';
+174        %include 'C:\ado\plus\s\stata_wrapper.sas'
+175        
+176        *I define my local permanent libraries in which I will modify and update outputs.;
+177        libname dimmod 'C:\Users\penarome\Desktop\Academic\UNCFDimSummer\modified' ;
+NOTE: Libref DIMMOD was successfully assigned as follows: 
+      Engine:        V9 
+      Physical Name: C:\Users\penarome\Desktop\Academic\UNCFDimSummer\modified
+178        libname fig 'C:\Users\penarome\Desktop\Academic\UNCFDimSummer\FDimasWriting';
+NOTE: Libref FIG was successfully assigned as follows: 
+      Engine:        V9 
+      Physical Name: C:\Users\penarome\Desktop\Academic\UNCFDimSummer\FDimasWriting
+179        
+180        *I define libraries in which to locate and extract rawdata. all these directories will
+180      !  be deleted at the end of the project;
+181        
+182        libname rawcomp 'C:\Users\penarome\Desktop\Academic\RAW DATABASES\RCompustat_2015' ;
+NOTE: Libref RAWCOMP was successfully assigned as follows: 
+      Engine:        V9 
+      Physical Name: C:\Users\penarome\Desktop\Academic\RAW DATABASES\RCompustat_2015
+183        libname rawrat 'C:\Users\penarome\Desktop\Academic\RAW
+183      ! DATABASES\RCompustat_2015\rating';
+NOTE: Libref RAWRAT was successfully assigned as follows: 
+      Engine:        V9 
+      Physical Name: C:\Users\penarome\Desktop\Academic\RAW DATABASES\RCompustat_2015\rating
+184        
+185        
+186        * get required data from compustat annual;
+187        
+188        *	comp.fundq (if quarterly data, change variables as well, just add q to the variable)
+188      ! ;
+189        *	Date range-- applied to FYEAR (Fiscal Year);
+190        %let fyear1= 1980;
+191        %let fyear2= 2011;
+192        
+193        *  Selected data items (GVKEY, DATADATE, FYEAR and FYR are automatialy included);
+194        *I also require;
+195        %let vars=
+196        			substr(CUSIP,1, 8) as CUSIP,
+197        			fyear,
+198        			conm,
+199        			gvkey,
+200        			datadate,
+201        			fyr,
+202        				seq,
+203        				PRCC_C,
+204        				PRCC_F,
+205        				CSHO,
+206        				NI,
+207        				IBCOM,
+3                                        The SAS System            14:32 Wednesday, June 17, 2015
+
+208        				CEQ,
+209        				AT,
+210        				IB,
+211        				LT,
+212        				dltt,
+213        				dlc;
+214        
+215        	
+216        proc sql ;
+217               create table _compa as
+218               select distinct &vars
+219               from rawcomp.R_2015_funda
+220               where (fyear between &fyear1 and &fyear2) & (Consol='C') & (Datafmt='STD' and
+220      ! Popsrc='D' and Indfmt= 'INDL')
+221               order by gvkey, datadate;
+NOTE: Data file RAWCOMP.R_2015_FUNDA.DATA is in a format that is native to another host, or the 
+      file encoding does not match the session encoding. Cross Environment Data Access will be 
+      used, which might require additional CPU resources and might reduce performance.
+ERROR: User asked for termination
+NOTE: The SAS System stopped processing this step because of errors.
+NOTE: SAS set option OBS=0 and will continue to check statements. 
+      This might cause NOTE: No observations in data set.
+NOTE: There were 9359 observations read from the data set RAWCOMP.R_2015_FUNDA.
+      WHERE (fyear>=1980 and fyear<=2011) and (consol='C') and (datafmt='STD') and (popsrc='D') 
+      and (indfmt='INDL');
+WARNING: The data set WORK._COMPA may be incomplete.  When this step was stopped there were 0 
+         observations and 18 variables.
+NOTE: PROCEDURE SQL used (Total process time):
+      real time           5.76 seconds
+      cpu time            0.45 seconds
+      
+ERROR: Errors printed on page 3.
+
+NOTE: SAS Institute Inc., SAS Campus Drive, Cary, NC USA 27513-2414
+NOTE: The SAS System used:
+      real time           6.29 seconds
+      cpu time            0.90 seconds
+      

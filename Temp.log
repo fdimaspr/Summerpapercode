@@ -1,0 +1,68 @@
+1                                                          The SAS System                                16:42 Monday, June 15, 2015
+
+NOTE: Unable to open SASUSER.REGSTRY. WORK.REGSTRY will be opened instead.
+NOTE: All registry changes will be lost at the end of the session.
+
+WARNING: Unable to copy SASUSER registry to WORK registry. Because of this, you will not see registry customizations during this 
+         session.
+NOTE: Unable to open SASUSER.PROFILE. WORK.PROFILE will be opened instead.
+NOTE: All profile changes will be lost at the end of the session.
+NOTE: Copyright (c) 2002-2012 by SAS Institute Inc., Cary, NC, USA. 
+NOTE: SAS (r) Proprietary Software 9.4 (TS1M1) 
+      Licensed to UNIVERSITY OF NORTH CAROLINA CHAPEL HILL - SFA T&R, Site 70084277.
+NOTE: This session is executing on the X64_7PRO  platform.
+
+
+
+NOTE: Updated analytical products:
+      
+      SAS/STAT 13.1
+      SAS/ETS 13.1
+      SAS/OR 13.1
+      SAS/IML 13.1
+      SAS/QC 13.1
+
+NOTE: Additional host information:
+
+ X64_7PRO WIN 6.1.7601 Service Pack 1 Workstation
+
+NOTE: SAS initialization used:
+      real time           0.58 seconds
+      cpu time            0.29 seconds
+      
+1          
+2          *I define libraries in which to locate and extract rawdata. all these directories will
+2        !  be deleted at the end of the project;
+3          libname rawdeal 'C:\Users\penarome\Desktop\Academic\RAW DATABASES\RDealScan_2015' ;
+NOTE: Libref RAWDEAL was successfully assigned as follows: 
+      Engine:        V9 
+      Physical Name: C:\Users\penarome\Desktop\Academic\RAW DATABASES\RDealScan_2015
+4          *I define my local permanent libraries in which I will modify and update outputs.;
+5          libname dimmod 'C:\Users\penarome\Desktop\Academic\UNCPP2HL\modified' ;
+NOTE: Libref DIMMOD was successfully assigned as follows: 
+      Engine:        V9 
+      Physical Name: C:\Users\penarome\Desktop\Academic\UNCPP2HL\modified
+6          
+7          proc sort data=rawdeal.lendershares out=dimmod.temp nodupkey;
+NOTE: Data file RAWDEAL.LENDERSHARES.DATA is in a format that is native to another host, or the 
+      file encoding does not match the session encoding. Cross Environment Data Access will be 
+      used, which might require additional CPU resources and might reduce performance.
+8          	by companyid;
+9          	run;
+
+NOTE: There were 1543583 observations read from the data set RAWDEAL.LENDERSHARES.
+NOTE: 1525721 observations with duplicate key values were deleted.
+NOTE: The data set DIMMOD.TEMP has 17862 observations and 7 variables.
+2                                        The SAS System               16:42 Monday, June 15, 2015
+
+NOTE: PROCEDURE SORT used (Total process time):
+      real time           2.56 seconds
+      cpu time            1.46 seconds
+      
+
+
+NOTE: SAS Institute Inc., SAS Campus Drive, Cary, NC USA 27513-2414
+NOTE: The SAS System used:
+      real time           3.15 seconds
+      cpu time            1.77 seconds
+      

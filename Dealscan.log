@@ -1,0 +1,254 @@
+1                                                          The SAS System                               15:27 Tuesday, June 16, 2015
+
+NOTE: Unable to open SASUSER.REGSTRY. WORK.REGSTRY will be opened instead.
+NOTE: All registry changes will be lost at the end of the session.
+
+WARNING: Unable to copy SASUSER registry to WORK registry. Because of this, you will not see registry customizations during this 
+         session.
+NOTE: Unable to open SASUSER.PROFILE. WORK.PROFILE will be opened instead.
+NOTE: All profile changes will be lost at the end of the session.
+NOTE: Copyright (c) 2002-2012 by SAS Institute Inc., Cary, NC, USA. 
+NOTE: SAS (r) Proprietary Software 9.4 (TS1M1) 
+      Licensed to UNIVERSITY OF NORTH CAROLINA CHAPEL HILL - SFA T&R, Site 70084277.
+NOTE: This session is executing on the X64_7PRO  platform.
+
+
+
+NOTE: Updated analytical products:
+      
+      SAS/STAT 13.1
+      SAS/ETS 13.1
+      SAS/OR 13.1
+      SAS/IML 13.1
+      SAS/QC 13.1
+
+NOTE: Additional host information:
+
+ X64_7PRO WIN 6.1.7601 Service Pack 1 Workstation
+
+NOTE: SAS initialization used:
+      real time           0.52 seconds
+      cpu time            0.34 seconds
+      
+1          /*
+2          
+3          AUTHOR:          F. Dimas Pena Romera
+4          START DATE:      27/12/14
+5          LAST MODIFIED:   08/01/15	
+6          PURPOSE: Merge dealscan facility file with some data from package file, then merge
+6        ! with chava roberts link file
+7          to collect permnos.
+8          
+9          INPUT:
+10         	1. location of raw dealscan, facilicy, package and linkfiles after rawdeal.
+11         	2. location of destination merged file after dimmod.
+12         	3. variables requested from package file.
+13         	
+14         
+15         OUTPUT:
+16         	1. dimmod.filename = facility-package data merged file with permnos to link to
+16       ! crsp-compustat
+17         	*/
+18         
+19         *include macros;
+20         %include 'C:\Users\penarome\Desktop\Academic\Generic_code\Dimas\macros.sas';
+2060       
+2                                        The SAS System              15:27 Tuesday, June 16, 2015
+
+2061       *I define my local permanent libraries in which I will modify and update outputs.;
+2062       libname dimmod 'C:\Users\penarome\Desktop\Academic\UNCFDimSummer\modified' ;
+NOTE: Libref DIMMOD was successfully assigned as follows: 
+      Engine:        V9 
+      Physical Name: C:\Users\penarome\Desktop\Academic\UNCFDimSummer\modified
+2063       
+2064       *I define libraries in which to locate and extract rawdata. all these directories will
+2064     !  be deleted at the end of the project;
+2065       libname rawdeal 'C:\Users\penarome\Desktop\Academic\RAW DATABASES\RDealScan_2015' ;
+NOTE: Libref RAWDEAL was successfully assigned as follows: 
+      Engine:        V9 
+      Physical Name: C:\Users\penarome\Desktop\Academic\RAW DATABASES\RDealScan_2015
+2066       
+2067       
+2068       *load package raw, delete duplicated packages keeping package with earliest
+2068     ! dealactivedate;
+2069       proc sort data=rawdeal.Package out=_package1;
+NOTE: Data file RAWDEAL.PACKAGE.DATA is in a format that is native to another host, or the file 
+      encoding does not match the session encoding. Cross Environment Data Access will be used, 
+      which might require additional CPU resources and might reduce performance.
+2070       	by PackageID;
+2071       	run;
+
+NOTE: Input data set is already sorted; it has been copied to the output data set.
+NOTE: There were 197580 observations read from the data set RAWDEAL.PACKAGE.
+NOTE: The data set WORK._PACKAGE1 has 197580 observations and 35 variables.
+NOTE: PROCEDURE SORT used (Total process time):
+      real time           33.12 seconds
+      cpu time            2.51 seconds
+      
+
+2072       	
+2073       	
+2073     !  proc sort data= _package1;
+2074       	by packageid dealactivedate;
+2075       run;
+
+NOTE: There were 197580 observations read from the data set WORK._PACKAGE1.
+NOTE: The data set WORK._PACKAGE1 has 197580 observations and 35 variables.
+NOTE: PROCEDURE SORT used (Total process time):
+      real time           1:09.42
+      cpu time            5.22 seconds
+      
+
+2076       
+2077       data _package1; set _package1;
+2078       	by packageid;
+2079       	if first.packageid;
+2080       run;
+
+NOTE: There were 197580 observations read from the data set WORK._PACKAGE1.
+NOTE: The data set WORK._PACKAGE1 has 197580 observations and 35 variables.
+NOTE: DATA statement used (Total process time):
+3                                        The SAS System              15:27 Tuesday, June 16, 2015
+
+      real time           26.30 seconds
+      cpu time            2.04 seconds
+      
+
+2081       
+2082       *load raw facility file and attach dealactivedate plus other info from package file
+2082     ! (left join where left if Raw Facility);
+2083       proc sql;
+2084       	create table _facility1
+2085       	as select a.*,  b.DealPurpose, b.DealAmount, b.DealActiveDate
+2086       	from rawdeal.Facility a left join rawdeal.Package b
+2087       	on a.PackageID = b.PackageID;
+NOTE: Data file RAWDEAL.FACILITY.DATA is in a format that is native to another host, or the file 
+      encoding does not match the session encoding. Cross Environment Data Access will be used, 
+      which might require additional CPU resources and might reduce performance.
+NOTE: Data file RAWDEAL.PACKAGE.DATA is in a format that is native to another host, or the file 
+      encoding does not match the session encoding. Cross Environment Data Access will be used, 
+      which might require additional CPU resources and might reduce performance.
+NOTE: Table WORK._FACILITY1 created, with 277951 rows and 27 columns.
+
+2088       quit;
+NOTE: PROCEDURE SQL used (Total process time):
+      real time           1:28.95
+      cpu time            7.36 seconds
+      
+
+2089       
+2090       *delete duplicated facility ids (no duplicates found);
+2091       proc sort data=_facility1 out=_facility1 nodupkey;
+2092       	by facilityid;
+2093       run;
+
+NOTE: There were 277951 observations read from the data set WORK._FACILITY1.
+NOTE: 0 observations with duplicate key values were deleted.
+NOTE: The data set WORK._FACILITY1 has 277951 observations and 27 variables.
+NOTE: PROCEDURE SORT used (Total process time):
+      real time           7.63 seconds
+      cpu time            1.74 seconds
+      
+
+2094       
+2095       *load chava roberts link file raw. ;
+2096       PROC IMPORT OUT= _dscanlink2012 DATAFILE= "C:\Users\penarome\Desktop\Academic\RAW
+2096     ! DATABASES\RDealScan_2015\dscanlink2012.xlsx"
+2097                   DBMS=xlsx REPLACE;
+2098            SHEET="Data";
+2099            GETNAMES=YES;
+2100       RUN;
+
+NOTE: The import data set has 121366 observations and 11 variables.
+NOTE: WORK._DSCANLINK2012 data set was successfully created.
+NOTE: PROCEDURE IMPORT used (Total process time):
+      real time           12.63 seconds
+4                                        The SAS System              15:27 Tuesday, June 16, 2015
+
+      cpu time            8.56 seconds
+      
+
+2101       
+2102       * I attach gvkey identifier to each facility using Chava and Roberts file;
+2103       proc sql;
+2104       	create table _facility1
+2105       	as select a.*,  b.gvkey, b.facstartdate
+2106       	from _facility1 a left join _Dscanlink2012 b
+2107       	on a.facilityid = b.facid;
+WARNING: This CREATE TABLE statement recursively references the target table. A consequence of 
+         this is a possible data integrity problem.
+NOTE: Table WORK._FACILITY1 created, with 277951 rows and 29 columns.
+
+2108       quit;
+NOTE: PROCEDURE SQL used (Total process time):
+      real time           6.10 seconds
+      cpu time            1.62 seconds
+      
+
+2109       
+2110       * keep those facilities that merged Dscanlink with no missing gvkey;
+2111       data _facility1; set _facility1;
+2112       	if missing(gvkey)=0;
+2113       	*if missing(dealactivedate)=0;
+2114       run;
+
+NOTE: There were 277951 observations read from the data set WORK._FACILITY1.
+NOTE: The data set WORK._FACILITY1 has 121004 observations and 29 variables.
+NOTE: DATA statement used (Total process time):
+      real time           3.69 seconds
+      cpu time            0.65 seconds
+      
+
+2115       
+2116       *Check for duplicated facilities, no duplicates found;
+2117       proc sort data=_facility1 out=_facility1 nodupkey;
+2118       	by  facilityid facilitystartdate;
+2119       run;
+
+NOTE: There were 121004 observations read from the data set WORK._FACILITY1.
+NOTE: 0 observations with duplicate key values were deleted.
+NOTE: The data set WORK._FACILITY1 has 121004 observations and 29 variables.
+NOTE: PROCEDURE SORT used (Total process time):
+      real time           6.69 seconds
+      cpu time            0.65 seconds
+      
+
+2120       
+2121       data dimmod.facilitym; set _facility1;
+2122       	if missing(gvkey)=0;
+2123       	*if missing(dealactivedate)=0;
+2124       run;
+5                                        The SAS System              15:27 Tuesday, June 16, 2015
+
+
+NOTE: There were 121004 observations read from the data set WORK._FACILITY1.
+NOTE: The data set DIMMOD.FACILITYM has 121004 observations and 29 variables.
+NOTE: DATA statement used (Total process time):
+      real time           3.15 seconds
+      cpu time            0.46 seconds
+      
+
+2125       
+2126       *Clean the house
+2127       
+2128       *clear temporary libraries and datasets;
+2129       libname rawdeal clear;
+NOTE: Libref RAWDEAL has been deassigned.
+2130       
+2131       proc datasets lib=work memtype=data nolist;
+2132       delete _: ;
+2133       quit;
+
+NOTE: Deleting WORK._DSCANLINK2012 (memtype=DATA).
+NOTE: Deleting WORK._FACILITY1 (memtype=DATA).
+NOTE: Deleting WORK._PACKAGE1 (memtype=DATA).
+NOTE: PROCEDURE DATASETS used (Total process time):
+      real time           4.31 seconds
+      cpu time            0.12 seconds
+      
+
+NOTE: SAS Institute Inc., SAS Campus Drive, Cary, NC USA 27513-2414
+NOTE: The SAS System used:
+      real time           4:26.84
+      cpu time            31.34 seconds
+      

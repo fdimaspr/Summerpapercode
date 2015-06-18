@@ -1,0 +1,375 @@
+1                                                          The SAS System                               17:39 Tuesday, June 16, 2015
+
+NOTE: Unable to open SASUSER.REGSTRY. WORK.REGSTRY will be opened instead.
+NOTE: All registry changes will be lost at the end of the session.
+
+WARNING: Unable to copy SASUSER registry to WORK registry. Because of this, you will not see registry customizations during this 
+         session.
+NOTE: Unable to open SASUSER.PROFILE. WORK.PROFILE will be opened instead.
+NOTE: All profile changes will be lost at the end of the session.
+NOTE: Copyright (c) 2002-2012 by SAS Institute Inc., Cary, NC, USA. 
+NOTE: SAS (r) Proprietary Software 9.4 (TS1M1) 
+      Licensed to UNIVERSITY OF NORTH CAROLINA CHAPEL HILL - SFA T&R, Site 70084277.
+NOTE: This session is executing on the X64_7PRO  platform.
+
+
+
+NOTE: Updated analytical products:
+      
+      SAS/STAT 13.1
+      SAS/ETS 13.1
+      SAS/OR 13.1
+      SAS/IML 13.1
+      SAS/QC 13.1
+
+NOTE: Additional host information:
+
+ X64_7PRO WIN 6.1.7601 Service Pack 1 Workstation
+
+NOTE: SAS initialization used:
+      real time           0.71 seconds
+      cpu time            0.42 seconds
+      
+1          /*
+2          
+3          AUTHOR:          F. Dimas Pena Romera
+4          START DATE:      27/12/14
+5          LAST MODIFIED:   08/01/15	
+6          PURPOSE: G.
+7          
+8          INPUT:
+9          	1. location of raw dealscan, facilicy, package and linkfiles after rawdeal.
+10         	2. location of destination merged file after dimmod.
+11         	3. variables requested from package file.
+12         	
+13         
+14         OUTPUT:
+15         	1. dimmod.filename = facility-package data merged file with permnos to link to
+15       ! crsp-compustat
+16         	*/
+17         
+18         *include macros;
+19         %include 'C:\Users\penarome\Desktop\Academic\Generic_code\Dimas\macros.sas';
+2059       
+2060       *I define libraries in which to locate and extract rawdata. all these directories will
+2060     !  be deleted at the end of the project;
+2                                        The SAS System              17:39 Tuesday, June 16, 2015
+
+2061       libname rawdeal 'C:\Users\penarome\Desktop\Academic\RAW DATABASES\RDealScan_2015' ;
+NOTE: Libref RAWDEAL was successfully assigned as follows: 
+      Engine:        V9 
+      Physical Name: C:\Users\penarome\Desktop\Academic\RAW DATABASES\RDealScan_2015
+2062       
+2063       *I define my local permanent libraries in which I will modify and update outputs.;
+2064       libname dimmod 'C:\Users\penarome\Desktop\Academic\UNCFDimSummer\modified' ;
+NOTE: Libref DIMMOD was successfully assigned as follows: 
+      Engine:        V9 
+      Physical Name: C:\Users\penarome\Desktop\Academic\UNCFDimSummer\modified
+2065       
+2066       *prior to this file I've collected the DealScan-Compustat Universe using script
+2066     ! Dealscan.sas. resulting on dimmod.facilitym;
+2067       
+2068       
+2069       proc sort data=rawdeal.lendershares out=_lenders;
+NOTE: Data file RAWDEAL.LENDERSHARES.DATA is in a format that is native to another host, or the 
+      file encoding does not match the session encoding. Cross Environment Data Access will be 
+      used, which might require additional CPU resources and might reduce performance.
+2070       	by facilityid;
+2071       	run;
+
+NOTE: There were 1543583 observations read from the data set RAWDEAL.LENDERSHARES.
+NOTE: The data set WORK._LENDERS has 1543583 observations and 7 variables.
+NOTE: PROCEDURE SORT used (Total process time):
+      real time           1.87 seconds
+      cpu time            1.71 seconds
+      
+
+2072       
+2073       proc sql;
+2074       	create table _lenders
+2075       	as select a.*, b.loantype, b.distributionMethod
+2076       	from _lenders a left join dimmod.facilitym b
+2077       	on a.facilityid = b.FacilityID;
+WARNING: This CREATE TABLE statement recursively references the target table. A consequence of 
+         this is a possible data integrity problem.
+NOTE: Table WORK._LENDERS created, with 1543583 rows and 9 columns.
+
+2078       quit;
+NOTE: PROCEDURE SQL used (Total process time):
+      real time           4.86 seconds
+      cpu time            0.92 seconds
+      
+
+2079       
+2080       proc sql;
+2081       	create table _lenders
+2082       	as select a.*, b.*
+2083       	from _lenders a left join rawdeal.company b
+2084       	on a.companyID = b.CompanyID;
+NOTE: Data file RAWDEAL.COMPANY.DATA is in a format that is native to another host, or the file 
+      encoding does not match the session encoding. Cross Environment Data Access will be used, 
+3                                        The SAS System              17:39 Tuesday, June 16, 2015
+
+      which might require additional CPU resources and might reduce performance.
+WARNING: This CREATE TABLE statement recursively references the target table. A consequence of 
+         this is a possible data integrity problem.
+WARNING: Variable CompanyID already exists on file WORK._LENDERS.
+NOTE: Table WORK._LENDERS created, with 1543583 rows and 24 columns.
+
+2085       quit;
+NOTE: PROCEDURE SQL used (Total process time):
+      real time           16.65 seconds
+      cpu time            3.22 seconds
+      
+
+2086       
+2087       
+2088       proc sort data=_lenders out=_lenders;
+2089       	by facilityid;
+2090       	run;
+
+NOTE: There were 1543583 observations read from the data set WORK._LENDERS.
+NOTE: The data set WORK._LENDERS has 1543583 observations and 24 variables.
+NOTE: PROCEDURE SORT used (Total process time):
+      real time           14.63 seconds
+      cpu time            2.69 seconds
+      
+
+2091       
+2092       *create dummyvariables to filter out types of lenders;
+2093       
+2094       *filter banks;
+2095       data _lenders; set _lenders;
+2096       if strip(InstitutionType) in ("US Bank" "African Bank" "Asia-Pacific Bank" "East.
+2096     ! Europe/Russian Bank" "Middle Eastern Bank" "Western European Bank" "Foreign Bank"
+2096     ! "Investment Bank" "Mortgage Bank" "Thrift/S&L") then Bank=1;
+WARNING: Apparent symbolic reference L not resolved.
+2097       else  Bank=0;
+2098       run;
+
+NOTE: There were 1543583 observations read from the data set WORK._LENDERS.
+NOTE: The data set WORK._LENDERS has 1543583 observations and 25 variables.
+NOTE: DATA statement used (Total process time):
+      real time           14.19 seconds
+      cpu time            1.74 seconds
+      
+
+2099       
+2100       data _lenders; set _lenders;
+2101       if Bank=0 and strip(InstitutionType) in ("") and (PrimarySiCCode ge 6311 and
+2101     ! PrimarySiCCode le 6082)
+2102       then Bank=1;
+2103       run;
+
+NOTE: There were 1543583 observations read from the data set WORK._LENDERS.
+NOTE: The data set WORK._LENDERS has 1543583 observations and 25 variables.
+4                                        The SAS System              17:39 Tuesday, June 16, 2015
+
+NOTE: DATA statement used (Total process time):
+      real time           16.38 seconds
+      cpu time            1.68 seconds
+      
+
+2104       
+2105       data _lenders; set _lenders;
+2106       if Bank=0 and strip(InstitutionType) in ("") and (PrimarySiCCode eq 6712)
+2107       then Bank=1;
+2108       run;
+
+NOTE: There were 1543583 observations read from the data set WORK._LENDERS.
+NOTE: The data set WORK._LENDERS has 1543583 observations and 25 variables.
+NOTE: DATA statement used (Total process time):
+      real time           14.49 seconds
+      cpu time            1.65 seconds
+      
+
+2109       
+2110       
+2111       data _lenders; set _lenders;
+2112       if Bank=0 and strip(InstitutionType) in ("") and (PrimarySiCCode eq 6719)
+2113       then Bank=1;
+2114       run;
+
+NOTE: There were 1543583 observations read from the data set WORK._LENDERS.
+NOTE: The data set WORK._LENDERS has 1543583 observations and 25 variables.
+NOTE: DATA statement used (Total process time):
+      real time           15.98 seconds
+      cpu time            1.76 seconds
+      
+
+2115       
+2116       data _lenders; set _lenders;
+2117       if Bank=0 and strip(InstitutionType) in ("") and (PrimarySiCCode eq 6211)
+2118       then Bank=1;
+2119       run;
+
+NOTE: There were 1543583 observations read from the data set WORK._LENDERS.
+NOTE: The data set WORK._LENDERS has 1543583 observations and 25 variables.
+NOTE: DATA statement used (Total process time):
+      real time           12.61 seconds
+      cpu time            1.68 seconds
+      
+
+2120       
+2121       
+2122       * filter insurance companies;
+2123       
+2124       data _lenders; set _lenders;
+2125       if strip(InstitutionType) in ("Insurance Company" "Institutional Investor Insurance
+2125     ! Compnay") then InsuranceComp=1;
+2126       else  InsuranceComp=0;
+5                                        The SAS System              17:39 Tuesday, June 16, 2015
+
+2127       run;
+
+NOTE: There were 1543583 observations read from the data set WORK._LENDERS.
+NOTE: The data set WORK._LENDERS has 1543583 observations and 26 variables.
+NOTE: DATA statement used (Total process time):
+      real time           9.15 seconds
+      cpu time            1.48 seconds
+      
+
+2128       
+2129       data _lenders; set _lenders;
+2130       if InsuranceComp=0 and missing(InstitutionType)=1 and (PrimarySiCCode eq 6731)
+2131       then InsuranceComp=1;
+2132       run;
+
+NOTE: There were 1543583 observations read from the data set WORK._LENDERS.
+NOTE: The data set WORK._LENDERS has 1543583 observations and 26 variables.
+NOTE: DATA statement used (Total process time):
+      real time           8.12 seconds
+      cpu time            1.34 seconds
+      
+
+2133       
+2134       
+2135       *filter pension funds;
+2136       
+2137       data _lenders; set _lenders;
+2138       if strip(InstitutionType) in ("Pension Fund") then PensionFund=1;
+2139       else  PensionFund=0;
+2140       run;
+
+NOTE: There were 1543583 observations read from the data set WORK._LENDERS.
+NOTE: The data set WORK._LENDERS has 1543583 observations and 27 variables.
+NOTE: DATA statement used (Total process time):
+      real time           9.09 seconds
+      cpu time            1.81 seconds
+      
+
+2141       
+2142       data _lenders; set _lenders;
+2143       if PensionFund=0 and strip(InstitutionType) in ("") and (PrimarySiCCode eq 6731)
+2144       then PensionFund=1;
+2145       run;
+
+NOTE: There were 1543583 observations read from the data set WORK._LENDERS.
+NOTE: The data set WORK._LENDERS has 1543583 observations and 27 variables.
+NOTE: DATA statement used (Total process time):
+      real time           8.35 seconds
+      cpu time            1.60 seconds
+      
+
+2146       
+2147       
+6                                        The SAS System              17:39 Tuesday, June 16, 2015
+
+2148       *filter
+2149       
+2150       
+2151       
+2152       
+2153       data _lenders; set _lenders;
+                          ___
+                          180
+
+ERROR 180-322: Statement is not valid or it is used out of proper order.
+
+2154       if strip(LoanType) in ("Term Loan B" "Term Loan C" "Term Loan D" "Term Loan E" "Term
+           __
+           180
+2154     ! Loan F") then inst= 1;
+
+ERROR 180-322: Statement is not valid or it is used out of proper order.
+
+2155       else inst=0;
+           ____
+           180
+
+ERROR 180-322: Statement is not valid or it is used out of proper order.
+
+2156       if strip(LoanType) in ("Revolver/Line < 1 Yr." "Revolver/Line >= 1 Yr." "Revolver/Term
+           __
+           180
+2156     !  Loan" "364-Day Facility" ) then revolver=1 ;
+
+ERROR 180-322: Statement is not valid or it is used out of proper order.
+
+2157       else revolver=0;
+           ____
+           180
+
+ERROR 180-322: Statement is not valid or it is used out of proper order.
+
+2158       if index(LoanType,'Term Loan') ge 1 then term=1;
+           __
+           180
+
+ERROR 180-322: Statement is not valid or it is used out of proper order.
+
+2159       else term=0;
+           ____
+           180
+
+ERROR 180-322: Statement is not valid or it is used out of proper order.
+
+2160       run;
+2161       
+2162       
+2163       *I generate a sata file dimmod.lendersinfo as my lendersinfo stata file;
+7                                        The SAS System              17:39 Tuesday, June 16, 2015
+
+2164       proc export
+NOTE: PROCEDURE EXPORT used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+      
+NOTE: SAS set option OBS=0 and will continue to check statements. 
+      This might cause NOTE: No observations in data set.
+
+2165       data= dimmod.lendersinfo
+2166       dbms=dta
+2167       outfile='C:\Users\penarome\Desktop\Academic\UNCFDimSummer\modified\lendersinfo.dta'
+2168       replace;
+2169       run;
+2170       
+2171       *Clean the house
+2172       
+2173       *clear temporary libraries and datasets;
+2174       
+2175       proc datasets lib=work memtype=data nolist;
+2176       delete _: ;
+2177       quit;
+
+NOTE: PROCEDURE DATASETS used (Total process time):
+      real time           3.33 seconds
+      cpu time            0.03 seconds
+      
+
+2178       
+2179       
+2180       /*
+2181       
+2182       
+2183       
+2184       
+2185       
+
+ERROR: Errors printed on page 6.
+
+NOTE: SAS Institute Inc., SAS Campus Drive, Cary, NC USA 27513-2414
+NOTE: The SAS System used:
+      real time           2:32.14
+      cpu time            23.83 seconds
+      
