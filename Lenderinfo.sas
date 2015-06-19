@@ -23,7 +23,7 @@ libname rawdeal 'C:\Users\penarome\Desktop\Academic\RAW DATABASES\RDealScan_2015
 
 *I define my local permanent libraries in which I will modify and update outputs.;
 libname dimmod 'C:\Users\penarome\Desktop\Academic\UNCFDimSummer\modified' ;
-
+*!!!!!!!!!!!!!
 *prior to this file I've collected the DealScan-Compustat Universe using script Dealscan.sas. resulting on dimmod.facilities;
 proc sort data=rawdeal.lendershares out=_lenders;
 	by facilityid;
@@ -59,7 +59,7 @@ if strip(InstitutionType) in ("US Bank" "African Bank" "Asia-Pacific Bank" "East
 else  Bank=0;
 run;
 
-proc print data=_lenders 
+*proc print data=_lenders; 
 
 
 data _lenders; set _lenders;
@@ -68,21 +68,20 @@ then Bank=1;
 run;
 
 data _lenders; set _lenders;
-if Bank=0 and missing(InstitutionType) and (PrimarySiCCode eq 6712) then delete; 
+if Bank=0 and missing(InstitutionType) and (PrimarySiCCode eq 6712) then Bank=1; 
 run;
 
-then Bank=1;
-run;
 
 data _lenders; set _lenders;
 if Bank=0 and missing(InstitutionType) and (PrimarySiCCode eq 6719)
-then delete;
+then Bank=1;
 run;
 
 data _lenders; set _lenders;
 if Bank=0 and missing(InstitutionType) and (PrimarySiCCode eq 6211)
 then Bank=1;
 run;
+
 * filter insurance companies;
 
 data _lenders; set _lenders;
@@ -98,7 +97,7 @@ run;
 *filter pension funds;
 
 data _lenders; set _lenders;
-if missing(InstitutionType) in ("Pension Fund") then PensionFund=1;
+if strip(InstitutionType) in ("Pension Fund") then PensionFund=1;
 else  PensionFund=0;
 run;
 
@@ -106,6 +105,19 @@ data _lenders; set _lenders;
 if PensionFund=0 and missing(InstitutionType) and (PrimarySiCCode eq 6731)
 then PensionFund=1;
 run;
+
+*filter mutual funds;
+
+data _lenders; set _lenders;
+if strip(InstitutionType) in ("Mutual Fund") then MutualFund=1;
+else  MutualFund=0;
+run;
+
+data _lenders; set _lenders;
+if MutualFund=0 and missing(InstitutionType) and (PrimarySiCCode eq 6731)
+then PensionFund=1;
+run;
+
 
 *I generate a sata file dimmod.lendersinfo as my lendersinfo stata file;
 
@@ -115,6 +127,8 @@ dbms=dta
 outfile='C:\Users\penarome\Desktop\Academic\UNCFDimSummer\modified\lendersinfo.dta'
 replace;
 run;
+
+
 
 data _lenders;
 	set _lenders;
