@@ -163,19 +163,42 @@ by gvkey datadate;
 run;
 
 * Generage a lagged version of the compustat crsp universe;
+%stata_wrapper; 
+data test (keep=datadate gvkey fyear);
+set dimmod.compcrsp ;
+run;
+%stata_wrapper(code) datalines;
+destring(gvkey), gen(id)
+xtset id fyear, yearly
+gen fdatadate=f.datadate
+savasas _all using C:\Users\penarome\Desktop\Academic\UNCFDimSummer\modified\sasdates.sas7bdat , replace
+;;;;
 
-proc sort data=dimmod.compcrsp; by gvkey descending datadate;
+data dimmod.sasdates; set dimmod.sasdates; 
+format datadate fdatadate date9.;
 run;
-data dimmod.Lcompcrsp; set dimmod.compcrsp;
-if gvkey=lag(gvkey) then ldatadate=lag1(datadate);
-else ldatadate=. ;
-if gvkey=lag(gvkey) then lendfyr=lag1(endfyr);
-if gvkey=lag(gvkey) then lbegfyr=lag1(begfyr); 
-format ldatadate lendfyr lbegfyr  date9.;
-run;
+
+proc sql; 
+	create table dimmod.Lcompcrsp as select distinct
+	a.*, b.fdatadate
+    from dimmod.compcrsp as a, dimmod.sasdates as b
+	where (a.gvkey = b.gvkey) 
+    and a.datadate = b.datadate; 
+	quit; 
+
+data dimmod.Lcompcrsp;
+   		set dimmod.Lcompcrsp;
+		format fendfyr fbegfyr date9.;
+		fendfyr=fdatadate;
+   		fbegfyr= intnx('month',fendfyr,-11,'beg');
+    run;
+
+proc print data=dimmod.Lcompcrsp (obs=50);
+	var gvkey fyear datadate fdatadate endfyr fendfyr begfyr fbegfyr;
+	run; 
 
 data dimmod.Lcompcrsp; set dimmod.Lcompcrsp;
-if missing(ldatadate) then delete;
+if missing(fdatadate) then delete;
 run;
 
 *clean the house;

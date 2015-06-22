@@ -87,7 +87,7 @@ proc sql;
 	create table _facility2
 	as select a.*, b.*
 	from _facility1 a left join dimmod.Lcompcrsp b
-	on a.gvkey = b.gvkey and (a.DealActiveDate ge b.lbegfyr) and (a.DealActiveDate le b.lendfyr);
+	on a.gvkey = b.gvkey and (a.DealActiveDate ge b.fbegfyr) and (a.DealActiveDate lt b.fendfyr);
 quit; 
 
 
