@@ -23,7 +23,7 @@ libname rawdeal 'C:\Users\penarome\Desktop\Academic\RAW DATABASES\RDealScan_2015
 
 *I define my local permanent libraries in which I will modify and update outputs.;
 libname dimmod 'C:\Users\penarome\Desktop\Academic\UNCFDimSummer\modified' ;
-*!!!!!!!!!!!!!
+
 *prior to this file I've collected the DealScan-Compustat Universe using script Dealscan.sas. resulting on dimmod.facilities;
 proc sort data=rawdeal.lendershares out=_lenders;
 	by facilityid;
@@ -55,7 +55,7 @@ proc sort data=_lenders out=_lenders;
 
 *filter banks;
 data _lenders; set _lenders;
-if strip(InstitutionType) in ("US Bank" "African Bank" "Asia-Pacific Bank" "East. Europe/Russian Bank" "Middle Eastern Bank" "Western European Bank" "Foreign Bank" "Investment Bank" "Mortgage Bank" "Thrift/S&L") then Bank=1;
+if strip(InstitutionType) in ("US Bank" "African Bank" "Asia-Pacific Bank" "East. Europe/Russian Bank" "Middle Eastern Bank" "Western European Bank" "Foreign Bank" "Investment Bank" "Mortgage Bank" "Thrift/S&L" "Thrift / S&L") then Bank=1;
 else  Bank=0;
 run;
 
@@ -106,10 +106,11 @@ if PensionFund=0 and missing(InstitutionType) and (PrimarySiCCode eq 6731)
 then PensionFund=1;
 run;
 
+
 *filter mutual funds;
 
 data _lenders; set _lenders;
-if strip(InstitutionType) in ("Mutual Fund") then MutualFund=1;
+if strip(InstitutionType) in ("Mutual Fund" "Insitutional Investor Prime Fund") then MutualFund=1;
 else  MutualFund=0;
 run;
 
@@ -118,17 +119,21 @@ if MutualFund=0 and missing(InstitutionType) and (PrimarySiCCode eq 6731)
 then PensionFund=1;
 run;
 
+*filter CDO/CLO;
 
-*I generate a sata file dimmod.lendersinfo as my lendersinfo stata file;
-
-proc export 
-data= work._lenders
-dbms=dta
-outfile='C:\Users\penarome\Desktop\Academic\UNCFDimSummer\modified\lendersinfo.dta'
-replace;
+data _lenders; set _lenders;
+if strip(InstitutionType) in ("CDO/CLO") then CDO=1;
+else  CDO=0;
 run;
 
+*filter Hedge funds;
 
+data _lenders; set _lenders;
+	if strip(InstitutionType) in ("Institutional Investor Hedge Fund" "Distressed(Vulture) Fund") then Hedge=1;
+	else Hedge=0;
+run;
+
+* I figure out which are bank-only facilities and which have non-bank institutional investors in them;
 
 data _lenders;
 	set _lenders;
@@ -147,11 +152,44 @@ run;
 
 data _a;
 	set _a;
-	if n gt 0;
-	if 
+	if n gt 0 then hasinst=1;
+	if n eq 0 then hasinst=0;
+	keep facilityid hasinst;
 run;
 
-*filter 
+proc sql; 
+create table _facilitydata 
+as select a.*, b.hasinst 
+from dimmod.facilities a left join _a b 
+on a.facilityid=b.facilityid;
+quit;
+
+
+*check these duplicates!;
+proc sort data=_facilitydata nodupkey;
+	by facilityid;
+run;
+
+*I generate a sata file dimmod.lendersinfo as my lendersinfo stata file;
+
+proc export 
+data= work._facilitydata
+dbms=dta
+outfile='C:\Users\penarome\Desktop\Academic\UNCFDimSummer\modified\_facilitydata.dta'
+replace;
+run;
+
+
+
+
+
+
+proc sql; 
+	create table _lenders
+	as select a.*, b.*
+	from _lenders a left join rawdeal.company b
+	on a.companyID = b.CompanyID;
+quit; 
 
 
 

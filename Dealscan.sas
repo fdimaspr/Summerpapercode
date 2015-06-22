@@ -111,8 +111,52 @@ quit;
 
 
 
+*create a variable for number of lenders per package;
+
+*create number of lenders variable (by package);
+
+data _x; set rawdeal.facility;
+	keep facilityid packageid
+	run;
+
+proc sort data=_x nodupkey; *no duplicates found;
+	by facilityid;
+run;
+
+proc sql;
+	create table _numlenders
+	as select a.facilityid, a.companyid, b.packageid from rawdeal.lendershares a  inner join _x b
+	on (a.facilityid = b.facilityid);
+quit;
+
+
+proc sort data=_numlenders nodupkey;
+	by packageid companyid;
+run;
+
+
+proc sql ;
+	create table _numlenders as
+	select *, count(companyid) as numlenders from _numlenders group by packageid;
+quit;
+
+
+proc sort data=_numlenders nodupkey;
+	by packageid;
+run;
+
+
+proc sql;
+	create table _facility4
+	as select a.*, b.numlenders
+	from _facility3 a left join _numlenders b
+	on a.packageid = b.packageid;
+quit; 
+
+
+
 *I require Loan data and Firm data to be non-missing;
-data _facility4; set _facility3;
+data _facility4; set _facility4;
 	if not(missing(permno));
 	if not(missing(at));
 	if not(missing(lt));
