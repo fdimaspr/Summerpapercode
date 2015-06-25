@@ -20,8 +20,8 @@ OUTPUT:
 */
 
 *include macros;
-%include 'C:\Users\penarome\Desktop\Academic\UNCPP2HL\Scripts\macros.sas';
-%include 'C:\ado\plus\s\stata_wrapper.sas'
+*%include 'C:\Users\penarome\Desktop\Academic\UNCPP2HL\Scripts\macros.sas';
+%include 'C:\ado\plus\s\stata_wrapper.sas';
 
 *I define my local permanent libraries in which I will modify and update outputs.;
 libname dimmod 'C:\Users\penarome\Desktop\Academic\UNCFDimSummer\modified' ;
@@ -37,7 +37,7 @@ libname rawrat 'C:\Users\penarome\Desktop\Academic\RAW DATABASES\RCompustat_2015
 
 *	comp.fundq (if quarterly data, change variables as well, just add q to the variable);
 *	Date range-- applied to FYEAR (Fiscal Year); 
-%let fyear1= 1990;  
+%let fyear1= 1980;  
 %let fyear2= 2014;
 
 *  Selected data items (GVKEY, DATADATE, FYEAR and FYR are automatialy included);
@@ -60,9 +60,14 @@ libname rawrat 'C:\Users\penarome\Desktop\Academic\RAW DATABASES\RCompustat_2015
 				IB,
 				LT,
 				dltt,
-				dlc;
+				dlc,
+				act,
+				lct,
+				re,
+				XINT,
+				TXT,
+				sale;
 
-	
 proc sql ;
        create table _compa as
        select distinct &vars

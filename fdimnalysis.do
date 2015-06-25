@@ -1,4 +1,4 @@
-clear all
+cclear all
 
 cd "C:\Users\penarome\Desktop\Academic\UNCFDimSummer\modified"
 use _facilitydata.dta, clear
@@ -89,9 +89,10 @@ replace dltt=. if dltt<0
 replace dlc=. if dlc<0
 replace prcc_f=. if prcc_f<=0
 replace csho=. if csho<=0
+replace lt=. if lt<=0
 
 *I winsorize by year at top and bottom pctile.
-foreach x in at allindrawn dltt dlc facilityamt ib prcc_f csho {
+foreach x in at allindrawn dltt dlc facilityamt ib prcc_f csho act lct re ni xint txt sale{
 winsor2 `x' , cuts(1 99) replace 
 }
 
@@ -105,36 +106,40 @@ gen PROFIT=ib/at
 rename numlenders NUMLENDERS
 rename hasinst HASINST
 gen SIZExHASINST=SIZE*HASINST
-
-
 gen MVE=prcc_f*csho
+
+gen ALTMAN = (1.2*(act-lct)/at + 1.4*re/at + 3.3*(ni+xint+txt)/at+0.6*csho*prcc_f/lt + 0.999*sale/at)
+
 gen SIZE2=log(MVE)
 gen SIZE2xHASINST=SIZE2*HASINST 
 
 replace facilityamt=facilityamt/1000000
 gen LOANAMT=ln(facilityamt)
+gen NUMEST=numest
+replace NUMEST=0 if NUMEST==.
+gen D_EST=(numest!=.)
 
 
-su allindrawn maturity NUMLENDERS HASINST facilityamt at LEV PROFIT SIZE
+su allindrawn maturity NUMLENDERS HASINST facilityamt at LEV PROFIT SIZE D_EST NUMEST ALTMAN
 
-global CONTROLS "LEV MAT PROFIT NUMLENDERS LOANAMT"
+global CONTROLS "LEV MAT PROFIT NUMLENDERS LOANAMT NUMEST ALTMAN"
 
 
 *TABLE 1 - descriptives
 preserve
-keep allindrawn maturity NUMLENDERS HASINST facilityamt at MVE LEV PROFIT 
+keep allindrawn maturity NUMLENDERS HASINST facilityamt at MVE LEV PROFIT NUMEST ALTMAN 
 outreg2 using descript1.tex, sum(detail)  eqkeep(N mean sd  p25 p75) sortvar(allindrawn maturity NUMLENDERS HASINST facilityamt at LEV PROFIT ) tex(frag) replace
 restore 
 
 preserve
 drop if HASINST==0
-keep allindrawn maturity NUMLENDERS HASINST facilityamt at MVE LEV PROFIT 
+keep allindrawn maturity NUMLENDERS HASINST facilityamt at MVE LEV PROFIT NUMEST ALTMAN
 outreg2 using descript2.tex, sum(detail)  eqkeep(N mean sd  p25 p75) sortvar(allindrawn maturity NUMLENDERS HASINST facilityamt at LEV PROFIT ) tex(frag) replace
 restore 
 
 preserve
 drop if HASINST==1
-keep allindrawn maturity NUMLENDERS HASINST facilityamt at MVE LEV PROFIT 
+keep allindrawn maturity NUMLENDERS HASINST facilityamt at MVE LEV PROFIT NUMEST ALTMAN
 outreg2 using descript3.tex, sum(detail)  eqkeep(N mean sd  p25 p75) sortvar(allindrawn maturity NUMLENDERS HASINST facilityamt at LEV PROFIT ) tex(frag)  replace
 restore
 
