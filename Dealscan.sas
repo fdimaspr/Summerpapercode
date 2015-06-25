@@ -90,6 +90,10 @@ proc sql;
 	on a.gvkey = b.gvkey and (a.DealActiveDate ge b.fbegfyr) and (a.DealActiveDate lt b.fendfyr);
 quit; 
 
+proc print data=_facility2 (obs=50);
+	var facilityid gvkey fyear datadate fdatadate  fbegfyr dealactivedate  fendfyr;
+	run; 
+
 
 *merge Facility pricing data;
 proc sort data=rawdeal.currfacpricing out=_price nodupkey;
@@ -98,7 +102,7 @@ run;
 data _price; set _price;
 	if missing(allindrawn)=0;
 run; 
-proc sort data=_price out=_price nodupkey;
+proc sort data=_price out=_price nodupkey; *no duplicates found;
 	by facilityid;
 run;
 
@@ -108,7 +112,6 @@ proc sql;
 	from _facility2 a left join _price b
 	on a.facilityid = b.facilityid;
 quit; 
-
 
 
 *create a variable for number of lenders per package;
@@ -131,18 +134,22 @@ quit;
 
 
 proc sort data=_numlenders nodupkey;
-	by packageid companyid;
+	by facilityid companyid;
 run;
 
 
 proc sql ;
 	create table _numlenders as
-	select *, count(companyid) as numlenders from _numlenders group by packageid;
+	select *, count(distinct companyid) as numlenders from _numlenders group by facilityid;
 quit;
 
 
+proc print data=_numlenders (obs=50);
+	var facilityid companyid numlenders;
+	run; 
+
 proc sort data=_numlenders nodupkey;
-	by packageid;
+	by facilityid;
 run;
 
 
@@ -150,7 +157,7 @@ proc sql;
 	create table _facility4
 	as select a.*, b.numlenders
 	from _facility3 a left join _numlenders b
-	on a.packageid = b.packageid;
+	on a.facilityid = b.facilityid;
 quit; 
 
 

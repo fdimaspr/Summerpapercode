@@ -2,11 +2,13 @@ clear all
 
 cd "C:\Users\penarome\Desktop\Academic\UNCFDimSummer\modified"
 use _facilitydata.dta, clear
-*cd "C:\Users\penarome\Desktop\Academic\UNCFDimSummer\modified"
+cd "C:\Users\penarome\Desktop\Academic\UNCFDimSummer\FDimasWriting"
+global figuresdir "C:\Users\penarome\Desktop\Academic\UNCFDimSummer\FDimasWriting"
 
 * i construct 14 industry dummies based on HL 2005
 rename sic dnum
 destring(dnum), replace
+destring(gvkey), replace
 
 gen sic = 0
 browse sic dnum 
@@ -47,28 +49,7 @@ replace sicname= "Insurance and real estate"  if sic==13
 replace sicname= "Services"  if sic==14  
 
 
-*some logical checks
-replace at=. if  at <= 0 
-replace facilityamt=. if facilityamt <=0
-replace allindrawn=. if allindrawn<=0
-replace dltt=. if dltt<0
-replace dlc=. if dlc<0
-
-*I winsorize by year at top and bottom pctile.
-foreach x in at allindrawn dltt dlc facilityamt{
-winsor2 `x' , replace cuts(1 99)  by(fyear)
-}
-
-*generate some relevant variables
-gen SIZE = ln(at)
-gen SPREAD=ln(allindrawn)
-gen LEV=(dltt+dlc)/at
-gen MAT=ln(maturity)
-gen PROFIT=ib/at
-rename numlenders NUMLENDERS
-rename hasinst HASINST
-gen SIZExHASINST=SIZE*HASINST
-gen LOANAMT=ln(facilityamt)
+*I construct RATINGS 
 *ratings
 gen RATED=1 if splticrm!=""
 replace RATED=0 if splticrm==""
@@ -100,26 +81,133 @@ replace RATING=0 if splticrm==""
 gen INVG= RATED==1 & RATING<=10
 replace INVG=. if RATING==0
 
+*some logical checks
+replace at=. if  at <= 0 
+replace facilityamt=. if facilityamt <=0
+replace allindrawn=. if allindrawn<=0
+replace dltt=. if dltt<0
+replace dlc=. if dlc<0
+replace prcc_f=. if prcc_f<=0
+replace csho=. if csho<=0
 
-destring(gvkey), replace
+*I winsorize by year at top and bottom pctile.
+foreach x in at allindrawn dltt dlc facilityamt ib prcc_f csho {
+winsor2 `x' , cuts(1 99) replace 
+}
+
+*generate some relevant variables
+
+gen SIZE = ln(at)
+gen SPREAD=ln(allindrawn)
+gen LEV=(dltt+dlc)/at
+gen MAT=ln(maturity)
+gen PROFIT=ib/at
+rename numlenders NUMLENDERS
+rename hasinst HASINST
+gen SIZExHASINST=SIZE*HASINST
+
+
+gen MVE=prcc_f*csho
+gen SIZE2=log(MVE)
+gen SIZE2xHASINST=SIZE2*HASINST 
+
+replace facilityamt=facilityamt/1000000
+gen LOANAMT=ln(facilityamt)
+
+
+su allindrawn maturity NUMLENDERS HASINST facilityamt at LEV PROFIT SIZE
+
+global CONTROLS "LEV MAT PROFIT NUMLENDERS LOANAMT"
+
+
+*TABLE 1 - descriptives
+preserve
+keep allindrawn maturity NUMLENDERS HASINST facilityamt at MVE LEV PROFIT 
+outreg2 using descript1.tex, sum(detail)  eqkeep(N mean sd  p25 p75) sortvar(allindrawn maturity NUMLENDERS HASINST facilityamt at LEV PROFIT ) tex(frag) replace
+restore 
 
 preserve
-xi: reg SPREAD LEV MAT PROFIT NUMLENDERS LOANAMT HASINST SIZE SIZExHASINST i.fyear i.sic i.dealpurpose i.RATING, cluster(facilityid)
+drop if HASINST==0
+keep allindrawn maturity NUMLENDERS HASINST facilityamt at MVE LEV PROFIT 
+outreg2 using descript2.tex, sum(detail)  eqkeep(N mean sd  p25 p75) sortvar(allindrawn maturity NUMLENDERS HASINST facilityamt at LEV PROFIT ) tex(frag) replace
+restore 
+
+preserve
+drop if HASINST==1
+keep allindrawn maturity NUMLENDERS HASINST facilityamt at MVE LEV PROFIT 
+outreg2 using descript3.tex, sum(detail)  eqkeep(N mean sd  p25 p75) sortvar(allindrawn maturity NUMLENDERS HASINST facilityamt at LEV PROFIT ) tex(frag)  replace
 restore
 
-preserve
-drop if fyear<1990
-xi: reg SPREAD LEV MAT PROFIT NUMLENDERS LOANAMT HASINST SIZE SIZExHASINST i.fyear i.sic i.dealpurpose i.RATING, cluster(facilityid)
-restore
 
-preserve
-*drop if fyear<1990
-drop if RATING==0
-xi: reg SPREAD LEV MAT PROFIT NUMLENDERS LOANAMT HASINST SIZE SIZExHASINST i.fyear i.sic i.dealpurpose i.RATING, cluster(facilityid)
+*TABLE 2 - NON BANK INSTITUTIONAL PRICING OF SIZE
+
+* FIRM CLUSTERED STANDARD ERRORS - SIZE 1 LOG(AT)
+preserve 
+xi: reg allindrawn $CONTROLS HASINST SIZE SIZExHASINST i.fyear i.RATING i.sic i.primarypurpose, robust cluster(gvkey) 
+est store A
 restore
 
 preserve 
-drop if INVG==1
-xi: reg SPREAD LEV MAT PROFIT NUMLENDERS LOANAMT HASINST SIZE SIZExHASINST i.fyear i.sic i.dealpurpose i.RATING, cluster(facilityid)
+drop if RATING==0
+xi: reg allindrawn $CONTROLS HASINST SIZE SIZExHASINST i.fyear i.RATING i.sic i.primarypurpose, robust cluster(gvkey) 
+est store B
 restore
+
+preserve 
+drop if fyear<1996
+xi: reg allindrawn $CONTROLS HASINST SIZE SIZExHASINST i.fyear i.RATING i.sic i.primarypurpose, robust cluster(gvkey) 
+est store C
+restore
+
+
+esttab A B C using "$figuresdir\Table2.tex", tex replace f b(3) p(3) eqlabels(none) alignment(S S)  mtitles(FULL RATED AFTER1996) noeqlines nogaps wide  keep($CONTROLS HASINST SIZE SIZExHASINST)  star(* 0.10 ** 0.05 *** 0.01)  ar2 
+eststo clear
+
+
+
+
+
+
+* FIRM CLUSTERED STANDARD ERRORS - SIZE2 LOG(MVE)
+preserve 
+xi: reg allindrawn $CONTROLS HASINST SIZE2 SIZE2xHASINST i.fyear i.RATING i.sic i.primarypurpose, robust cluster(gvkey) 
+est store A
+restore
+
+preserve 
+drop if RATING==0
+xi: reg allindrawn $CONTROLS HASINST SIZE2 SIZE2xHASINST i.fyear i.RATING i.sic i.primarypurpose, robust cluster(gvkey) 
+est store B
+restore
+
+preserve 
+drop if fyear<1996
+xi: reg allindrawn $CONTROLS HASINST SIZE2 SIZE2xHASINST i.fyear i.RATING i.sic i.primarypurpose, robust cluster(gvkey) 
+est store C
+restore
+
+
+esttab A B C using "$figuresdir\Table3.tex", tex replace f b(3) p(3) eqlabels(none) alignment(S S)  mtitles(FULL RATED AFTER1996) noeqlines nogaps wide  keep($CONTROLS HASINST SIZE2 SIZE2xHASINST)  star(* 0.10 ** 0.05 *** 0.01)  ar2 
+eststo clear
+
+
+save temp.dta, replace
+
+
+
+duplicates drop gvkey fyear, force
+egen numobs=count(gvkey), by(fyear sic)
+egen decrank= xtile(at), by(fyear sic) n(10)
+keep gvkey fdatadate decrank numobs
+
+
+merge 1:m gvkey fdatadate using temp.dta
+
+
+
+
+
+
+
+
 

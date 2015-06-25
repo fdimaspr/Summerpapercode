@@ -37,8 +37,8 @@ libname rawrat 'C:\Users\penarome\Desktop\Academic\RAW DATABASES\RCompustat_2015
 
 *	comp.fundq (if quarterly data, change variables as well, just add q to the variable);
 *	Date range-- applied to FYEAR (Fiscal Year); 
-%let fyear1= 1980;  
-%let fyear2= 2011;
+%let fyear1= 1990;  
+%let fyear2= 2014;
 
 *  Selected data items (GVKEY, DATADATE, FYEAR and FYR are automatialy included);
 *I also require;
@@ -162,7 +162,7 @@ proc sort data=_compa out=dimmod.compcrsp;
 by gvkey datadate;
 run;
 
-* Generage a lagged version of the compustat crsp universe;
+* Generage a lagged version of the compustat crsp universe - i use stata for this for convenience;
 %stata_wrapper; 
 data test (keep=datadate gvkey fyear);
 set dimmod.compcrsp ;
