@@ -1,0 +1,49 @@
+\begin{center}
+	\footnotesize
+\newcolumntype{Y}{>{\raggedleft\arraybackslash}X}
+\begin{tabularx} {20cm} {@{} l Y Y Y Y Y Y Y Y Y Y Y Y Y Y Y Y@{}} \\
+\toprule
+ & \multicolumn{6}{c}{\textbf{Bank vs Institutional loans}} \\
+\cmidrule(l{.75em}){2-10} 
+\textbf{FF30 industries} & \multicolumn{2}{c}{\textbf{Non-Institutional loans}} & \multicolumn{2}{c}{\textbf{Institutional loans}} & \multicolumn{2}{c}{\textbf{Total}} \\
+\cmidrule(l{.75em}){2-4} \cmidrule(l{.75em}){5-7}\cmidrule(l{.75em}){8-10}
+&No.&Col \%&No.&Col \%&No.&Col \% \\
+\midrule
+Food Products&804&2.1&46&2.1&850&2.1 \\
+Beer and Liquor&100&0.3&13&0.6&113&0.3 \\
+Tobacco Products&37&0.1&2&0.1&39&0.1 \\
+Recreation&849&2.2&123&5.7&972&2.4 \\
+Printing and Publishing&428&1.1&42&1.9&470&1.1 \\
+Consumer Goods&569&1.5&33&1.5&602&1.5 \\
+Apparel&536&1.4&21&1.0&557&1.4 \\
+Healthcare, Medical Equip and Pharmaceuticals&2112&5.4&168&7.7&2280&5.6 \\
+Chemicals&776&2.0&57&2.6&833&2.0 \\
+Textiles&308&0.8&13&0.6&321&0.8 \\
+Construction and Const. Materials&1367&3.5&61&2.8&1428&3.5 \\
+Steel Works&675&1.7&28&1.3&703&1.7 \\
+Fabricated Products&1288&3.3&66&3.0&1354&3.3 \\
+Electrical Equipment&434&1.1&39&1.8&473&1.2 \\
+Automobiles&539&1.4&49&2.3&588&1.4 \\
+Aircraft, Ships and Equipment&281&0.7&7&0.3&288&0.7 \\
+Precious Metals and Industrial Metal Mining&356&0.9&7&0.3&363&0.9 \\
+Coal&74&0.2&11&0.5&85&0.2 \\
+Petroleum and Natural Gas&2485&6.4&58&2.7&2543&6.2 \\
+Utilities&2182&5.6&61&2.8&2243&5.5 \\
+Communication&1628&4.2&263&12.1&1891&4.6 \\
+Personal and Business Services&3083&8.0&227&10.4&3310&8.1 \\
+Business Equipment&2711&7.0&129&5.9&2840&6.9 \\
+Business Supplies and Shipping Containers&639&1.6&81&3.7&720&1.8 \\
+Transportation&1235&3.2&53&2.4&1288&3.1 \\
+Wholesale&1412&3.6&77&3.5&1489&3.6 \\
+Retail&2291&5.9&94&4.3&2385&5.8 \\
+Restaurants, Hotels \& Motels&622&1.6&63&2.9&685&1.7 \\
+Financial Institutions&7847&20.2&168&7.7&8015&19.6 \\
+Other&1093&2.8&116&5.3&1209&3.0 \\
+\textbf{Total}&38761&100.0&2176&100.0&40937&100.0 \\
+\bottomrule
+\addlinespace[.75ex]
+\end{tabularx}
+\par
+\end{center}
+\footnotesize{}
+

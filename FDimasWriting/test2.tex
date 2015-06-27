@@ -1,0 +1,19 @@
+\begin{tabular}{ccp{10cm}}
+\textit{Variable Number} & \textit{Variable name}&\textit{Construction of Variable}\\\\
+1&LEV&Leverage. Computed as (dltt + dlc)/at from Compustat. Estimated the year prior to the becoming active\\
+2&PROFIT&Profitability. Computed as ib/at. From Compustat. Estimated the year prior to the becoming active\\
+3&MVE&Market value of equity. Computed as (prcc x csho). From Compustat. Estimated the year prior to the becoming active\\
+4&AT&Total assets. Computed as at. From Compustat. Estimated the year prior to the becoming active\\
+5&ALTMANZ&Altman. Computed as (1.2x(act-lct)/at) + (1.4 x re/at) + (3.3 x (ni + xint + txt) /at) + (0.6 x csho x prcc/lt) + (0.999 x sale/at). From Compustat. Estimated the year prior to the becoming active\\
+6&NUMEST&Number of Analyst Following. Computed as the number of annual EPS estimates available in IBES for the fiscal year of the loan active date. The closest number of forecast reported by IBES prior to the loan Activation date is selected.\\
+7&D EST&Available Analyst Following. Indicator variable that takes value one if NUMEST is not missing and zero otherwise. From Ibes.\\
+8&RATING&Long term Credit Rating. Takes value 22 if splticrm equals AAA, 21 if splticrm equals AA etc. until takes value 1 if splticrm equals D\\
+9&RATED&Indicator variable. Takes value 1 if RATING is not missing and 0 otherwise.\\
+10&INVG&Indicator variable. Takes value 1 if RATING is not missing and is above 10, takes value 0 if RATING is not missing and below of equal to 10.\\
+11&SPREADRAW&Allindrawn spread above LIBOR of each loan (facility). From Dealscan and defined as..\\
+12&SPREAD&Log of SPREADRAW\\
+13&NUMLENDERS&Number of lenders. Number of distinct lenders in the facility. From Dealscan.\\
+14&HASINST&Indicator variable for Institutional loans. Takes value 1 for Loans (Facilities) where at least one of the lenders is a non-bank institutional investor. From Dealscan\\
+15&LOANAMT&Log of the loan ammount in million USD. Number of distinct lenders in the facility.\\
+16&MAT&Facility maturity in log(months). From Dealscan. \\
+\end{tabular}

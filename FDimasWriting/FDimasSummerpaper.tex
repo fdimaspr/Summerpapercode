@@ -1,0 +1,233 @@
+% !TeX spellcheck = en_GB
+\documentclass[english, 1p]{elsarticle}
+\usepackage{csvsimple}
+\usepackage[T1]{fontenc}
+\usepackage{subfig}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{fixltx2e}
+\usepackage{natbib}
+\biboptions{comma,authoryear, square}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{eucal}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{lscape}
+\usepackage{verbatim}
+\usepackage{graphicx}
+\usepackage{longtable}
+
+%% Because html converters don't know tabularnewline
+\providecommand{\tabularnewline}{\\}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\usepackage{multirow}
+\newcommand{\sr}{\rule[-0.45cm]{0pt}{1.99cm}}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{etex}
+ \usepackage[nodots]{numcompress}
+\usepackage[euler-digits]{eulervm}% For Tables created by estout
+\newcommand{\sym}[1]{#1} % for symbols in Table
+\usepackage{siunitx}\sisetup{ detect-mode, 
+          group-digits            = false ,
+          input-signs             = ,
+          input-symbols           = ()[]-+* , % specifying \sym here does not work
+          input-open-uncertainty  = ,
+          input-close-uncertainty = ,
+          table-align-text-post   = false 
+        }
+
+\def\xxx#1{%
+  \bgroup\uccode`\~\expandafter`\string#1%
+  \uppercase{\egroup\edef~{\noexpand\text\string#1}}%
+  \mathcode\expandafter`\string#1"8000 }
+\def\textsymbols{\xxx[\xxx]\xxx(\xxx)\xxx*}
+
+\makeatother
+\usepackage[linkcolor=black]{hyperref}
+
+\usepackage{babel}
+\usepackage{graphicx}
+\usepackage{comment}
+\begin{document}
+
+\title{Do institutional lenders price borrowers bellwetherness?}
+
+
+
+\author{Francisco Dimas Pena Romera}
+
+\address{Accounting PhD Student}
+\address{Kenan-Flagler Business School, University of North Carolina, Chapel Hill, NC 27599-3490, USA}
+\address{Jeffs Seminar 2015 - Summer paper research proposal}
+
+
+
+\pagebreak
+
+
+\begin{abstract}
+	
+	
+	I study whether bank and non-bank institutional investors that participate in debt syndicates value the insider trading opportunities that emanate from borrowing firms' \textit{bellwetherness} when setting interest spreads. Prior literature has documented that the role of non-bank institutional investors has increased in the past decades. Various papers show evidence consistent with non-bank institutional investors using private information that they extract from loan syndicates in order to profit from insider trading. Much like \cite{Bushman2014}, this paper analyses whether institutional investors price insider trading opportunities when they contract with borrowing firms. However, this paper focuses on a dimension of insider trading opportunities that has been largely unexplored by the extant literature - the extent to which gaining access to a firms' private information, is valuable not only to price the firm itself, but to price connected firms in the sector or the economy. First, I hypothesize that institutional investors will require lower spreads from bellwether firms - firms whose performance information has a large impact on the performance of related firms. Second, I hypothesize that the effect of bellwetherness on spreads is likely to be more pronounced for: a) negative bellwethers (firms whose \textit{negative} news largely affect connected firms) - since most of the insider information that can be extracted from loan syndicate participation emanates from covenant violations and loan amendments which are inherently bad news. b) when hedge funds or private equity firms participate in the syndicate. c) when a large portion of the connected firms have CDSs traded on their loans (availability of a highly liquid market in which to exploit insider information on connected firms' credit risk). 
+ 	%d) reduced short selling restrictions.
+	
+\end{abstract}
+
+
+
+\maketitle
+
+ 
+
+\section{Proposal} 
+
+
+The importance of non-bank institutional investors in the loan syndicated market has increased substantially since the 1990's. Loan syndicate participants generally have access to borrowers private information (such as more frequent financial updates, confidential conference calls with managers when covenants are violated and/or when debt terms are to be renegotiated etc.).  
+The increased participation of hedge funds and private equity firms in loan syndications has lead to concerns on the extent to which these obscure and scarcely regulated institutions exploit private information extracted from loan syndications for insider trading purposes. While banks are highly regulated and typically expend resources to establish "chinese walls" to prevent private information from leaking to trading desks, smaller institutions such as hedge funds tend to have smaller information barriers in place: \\
+\\
+\textit{"You can't put an ethical wall down the middle of someone's brain" - said Herbert F. Bohnet, a lawyer at Ropes \& Gray who represents hedge funds}. \citep[\textit{The New York Times}]{NYTOct2006}. \\
+
+  Various recent papers have documented trading patterns that are consistent with the notion that \textbf{private information from the loan syndication does indeed leak to traders}:
+  \begin{itemize}
+   \item \cite{Ivashina2011a} documents that institutional investors trade on private information obtained from participating in lending syndicates. The paper identifies institutional investors that attend private conference calls during loan amendments, and shows that such investors subsequently trade in the stocks of the borrowing company, outperforming institutions that were not part of the conference calls. 
+   \item \cite{Massoud2011} documents an abnormal short selling of firms stocks taking place prior to loan announcements and amendments when hedge funds are part of the syndication, consistent with the notion that hedge funds are taking short positions prior to bad news arriving to the market. 
+   \item \cite{Bushman2010} classifies borrowers into two portfolios: a "fast dissemination of confidential information" portfolio versus a "slow dissemination of confidential information" portfolio. The paper shows that the speed of price discovery in a borrowers stock is faster for borrowers in the fast information dissemination portfolio, only when non-bank institutional investors are part of the loan syndicate. This suggests that non bank institutional investors are trading on private information obtained from the loan syndicate, and thus impounding confidential information more rapidly in prices.  
+ 
+ \end{itemize}
+
+In perhaps the most related study of all:
+\begin{itemize}
+	\item \cite{Bushman2014} analyse whether the \textbf{availability of insider trading opportunities} is priced by debt syndicate participants. The paper documents a rather counter-intuitive, yet very interesting finding: non-bank institutional lenders demand an interest premium for borrower transparency, and this premium is more pronounced when hedge funds and private equity firms participate in the loan syndication. That is, more transparent borrowers pay higher spreads to compensate for reduced insider trading opportunities, and the effect is higher when lenders that are more likely to exploit private information (i.e. hedge funds and private equity) are members of the loan syndicate. 
+\end{itemize}
+ 
+
+Building on \cite{Bushman2014}, this paper aims at contributing to the knowledge of insider trading by participants in the loan syndicated market, by addressing a dimension of insider trading that, to the best of my knowledge, remains unexplored by the extant literature: \textbf{the extent to which gaining access to a firms' private information, is valuable not only to price the firm itself, but to price connected firms in the sector or the economy.} 
+Firms cannot be thought of as isolated from each other. Instead, firms form a complex network of interconnected nodes whose performances affect each other. Timely confidential information from firm A is not only useful to better price firm A, but also to price firm A's competitors, suppliers, customers or firms exposed to similar risks as those faced by firm A. In line with this argument:
+
+\begin{itemize}
+ \item \citep{Tseng2014w} studies disclosure practices of bellwether firms. Bellwether firms are defined as firms "whose performance speaks to the economy as a whole, or to large sectors of the economy" (Gray Jr., 2010). The paper aims at resolving the question of whether disclosure practices of bellwether firms are different from those of non-bellwether firms. On the one hand, if investors can obtain useful information about bellwether firms from other sources (such as government announcements about macroeconomic trends), this could reduce the demand for bellwether disclosures (substitution effect). Alternatively, if bellwether disclosures provide useful information about many other firms in the economy, investors may use bellwether disclosures to value other firms in the economy, and this additional usefulness may lead to increased demand for bellwether disclosure. The paper finds that bellwether firms disclose less frequently than non-bellwether firms, consistent with a substitution effect from other sources of macro information. However, for the subsample of firms with an ownership structure characterized by investors holding diversified portfolios, bellwethers are found to disclose more frequently than non-bellwethers. 
+\end{itemize}
+
+Based on \citep{Bushman2014}'s argument that institutional lenders impound insider trading opportunities in loan spreads, and on \cite{Tseng2014w}'s argument that disclosures of Bellwhether firms are particularly valuable for investors that hold diversified portfolios, I hypothesize the following:
+\begin{itemize}
+	\item[\textbf{H1)}] Bellwether firms whose private information allow for larger insider trading opportunities (since they affect a large number of firms in the economy) pay lower spreads when borrowing from loan syndicates.
+	\item[\textbf{H1b)}] The effect in H1 is more pronounced/concentrated for firms with hedge funds and private equity firms as members of the loan syndication. 
+	
+	\item[\textbf{H1c)}] The effect in H1 is more pronounced/concentrated for negative bellwethers (firms whose bad news affect large portions of the sector or the economy). 
+	
+	\item[\textbf{H1d)}] The effect is more pronounced/concentrated for bellwethers firms where a large portion of the sector has a liquid Credit Default Swap instrument traded on their debt. 
+\end{itemize}
+
+Understanding the implications of insider trading that takes place when institutional investors exploit confidential information from their lending activities \textbf{to place trades on connected firms} is an issue of great interest for regulators and practitioners. While insider trading is frequently thought as involving the use of material non public information of firm A to place trade on the securities of firm A, this paper is the first to analyse the extent to which another, more disguised form of insider trading could be jeopardizing the "fairness, health, and integrity of our markets" (SEC - Regulation Fair Disclosure).   
+
+
+\section{Sample}
+
+
+\pagebreak
+\section*{References}
+\bibliographystyle{chicago}
+\bibliography{Comps_SummerPaper}
+\pagebreak
+
+\pagebreak
+
+\section{Appendix - Miscellaneous comments}
+
+\subsection{How to measure Bellwetherness?}
+
+\begin{itemize}
+	\item Ideally I would want to use a network approach to measure \textbf{Bellwetherness} - (this is beyond the scope of this summer paper). 
+	
+	\item For now - my idea is to run ERC type regressions for each firm that borrows in the loan syndication. I will run regressions of each borrowing firms earnings surprise on Industry abnormal returns around the earnings surprise. For each borrowing firm, I will use the R-squared of this regression as a proxy for bellwetherness. (I believe a similar approach could be used using Returns on Returns instead of ERC type regressions).
+	
+	\item \cite{Tseng2014w} uses R squares from an earnings on aggregate earnings type regression.
+\end{itemize} 
+
+\subsection{Possible extension}
+\begin{itemize}
+	\item Although the purpose of this paper is to address if firm's bellwetherness is priced by institutional investors that participate in the loan syndication - an alternative study could attempt to directly address if hedge funds are actually placing trades on connected firms. For example, scraping through 10K's I could figure out which firms are suppliers/customers whose performance is likely affected by that of the borrowing firm. Then, I could follow an approach such as that in \cite{Massoud2011} to address if there are spikes of short-selling behavior of connected firms around borrowers bad news (such as loan announcements and amendments). This would be a much more direct test of whether insider information from loan syndications is being used to insider trade on connected firms (Scraping 10-Ks requires a non trivial amount of programming so I will potentially pursue this after the summer paper). 
+\end{itemize} 
+
+
+\section{Appendix - Variable description}
+
+
+
+
+\pagebreak
+
+\section*{Appendix A - Tables and figures}
+
+
+	\begin{table}[htbp]
+		\footnotesize 
+		\begin{center}
+			\caption{Variables}
+			\label{fig: instdescript}
+			\input{test2.tex}	
+		\end{center}
+	\end{table}
+
+	\begin{table}[htbp]
+		\footnotesize 
+		\begin{center}
+			\caption{Descriptives all loans}
+			\label{fig: instdescript}
+			\input{descript1.tex}	
+		\end{center}
+	\end{table}
+
+\begin{table}[htbp]
+	\footnotesize 
+	\begin{center}
+		\caption*{Descriptives Institituonal loans}
+		\label{fig: instdescript}
+		\input{descript2.tex}	
+	\end{center}
+\end{table}
+
+\begin{table}[htbp]
+	\footnotesize 
+	\begin{center}
+		\caption*{Descriptives bank only loans}
+		\label{fig: instdescript}
+		\input{descript3.tex}	
+	\end{center}
+\end{table}
+
+\begin{table}[h]\small
+	\caption{\textbf{The effect of centrality on non bank institutional premium}.  All regressions are estimated with \textbf{industry, year, loan purpose and rating fixed effects}. The proxy for centrality here is ECONLEAD, estimated as the log of total assets. The dependent variable is SPREAD (logged). Model 1 includes the full sample, model 2 restricts the sample to loans from firms with an available RATING, and model 3 includes sample of loans only after 1996.  Standard errors clustered at the firm level. ***, ** and * denote 1, 5, and 10 \% significance respectively. P-values are reported in parenthesis.} \label{tab:Table2} \centering
+	\begin{tabular}{ccccccc}      
+		\input{Table2.tex}
+	\end{tabular}
+\end{table}
+
+\begin{table}[h]\small
+	\caption{\textbf{The effect of centrality on non bank institutional premium}.  All regressions are estimated with \textbf{industry, year, loan purpose and rating fixed effects}. The proxy for centrality here is ECONLEAD, estimated as the log of MVE. The dependent variable is SPREAD (logged). Model 1 includes the full sample, model 2 restricts the sample to loans from firms with an available RATING, and model 3 includes sample of loans only after 1996.  Standard errors clustered at the firm level. ***, ** and * denote 1, 5, and 10 \% significance respectively. P-values are reported in parenthesis.} \label{tab:Table3} \centering
+	\begin{tabular}{ccccccc}      
+		\input{Table3.tex}
+	\end{tabular}
+\end{table}
+
+\begin{table}[h]\small
+	\caption{\textbf{The effect of centrality on non bank institutional premium}.  All regressions are estimated with \textbf{industry, year, loan purpose and rating fixed effects}. The proxy for centrality here is INDUSLEAD, estimated as the Industry-Year Decile Rank of the log of total assets (industry years with less than 10 distinct companies are dropped). The dependent variable is SPREAD (logged). Model 1 includes the full sample, model 2 restricts the sample to loans from firms with an available RATING, and model 3 includes sample of loans only after 1996.  Standard errors clustered at the firm level. ***, ** and * denote 1, 5, and 10 \% significance respectively. P-values are reported in parenthesis.} \label{tab:Table3} \centering
+	\begin{tabular}{ccccccc}      
+		\input{Table4.tex}
+	\end{tabular}
+\end{table}
+
+
+\begin{table}[h]\small
+	\caption{\textbf{The effect of centrality on non bank institutional premium}.  All regressions are estimated with \textbf{industry, year, loan purpose and rating fixed effects}. The proxy for centrality here is INDUSLEAD, estimated as the Industry-Year Decile Rank of the log of MVE (industry years with less than 10 distinct companies are dropped). The dependent variable is SPREAD (logged). Model 1 includes the full sample, model 2 restricts the sample to loans from firms with an available RATING, and model 3 includes sample of loans only after 1996.  Standard errors clustered at the firm level. ***, ** and * denote 1, 5, and 10 \% significance respectively. P-values are reported in parenthesis.} \label{tab:Table3} \centering
+	\begin{tabular}{ccccccc}      
+		\input{Table5.tex}
+	\end{tabular}
+\end{table}
+
+
+
+
+\end{document}

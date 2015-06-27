@@ -1,0 +1,36 @@
+\begin{center}
+	\footnotesize
+\newcolumntype{Y}{>{\raggedleft\arraybackslash}X}
+\begin{tabularx} {20cm} {@{} l Y Y Y Y Y Y Y Y Y Y Y Y Y Y Y Y@{}} \\
+\toprule
+ & \multicolumn{6}{c}{\textbf{Bank vs Institutional loans}} \\
+\cmidrule(l{.75em}){2-10} 
+\textbf{FF17 industries} & \multicolumn{2}{c}{\textbf{Non-Institutional loans}} & \multicolumn{2}{c}{\textbf{Institutional loans}} & \multicolumn{2}{c}{\textbf{Total}} \\
+\cmidrule(l{.75em}){2-4} \cmidrule(l{.75em}){5-7}\cmidrule(l{.75em}){8-10}
+&No.&Col \%&No.&Col \%&No.&Col \% \\
+\midrule
+Food&975&2.5&60&2.8&1035&2.5 \\
+Mining and Minerals&505&1.3&21&1.0&526&1.3 \\
+Oil and Petro Products&2586&6.7&64&2.9&2650&6.5 \\
+Textiles, Apparel \& Footware&859&2.2&34&1.6&893&2.2 \\
+Consumer Durables&890&2.3&62&2.8&952&2.3 \\
+Chemicals&738&1.9&56&2.6&794&1.9 \\
+Drugs, Soap, Prfums, Tobacco&842&2.2&52&2.4&894&2.2 \\
+Construction&1504&3.9&77&3.5&1581&3.9 \\
+Steel&675&1.7&28&1.3&703&1.7 \\
+Fabricated Products&302&0.8&29&1.3&331&0.8 \\
+Machinery and Business Equipment&3631&9.4&186&8.5&3817&9.3 \\
+Automobiles&583&1.5&60&2.8&643&1.6 \\
+Transporation&1608&4.1&73&3.4&1681&4.1 \\
+Utilities&2182&5.6&61&2.8&2243&5.5 \\
+Retail Stores&2473&6.4&110&5.1&2583&6.3 \\
+Financial Institutions&7847&20.2&168&7.7&8015&19.6 \\
+Other&10561&27.2&1035&47.6&11596&28.3 \\
+\textbf{Total}&38761&100.0&2176&100.0&40937&100.0 \\
+\bottomrule
+\addlinespace[.75ex]
+\end{tabularx}
+\par
+\end{center}
+\footnotesize{}
+

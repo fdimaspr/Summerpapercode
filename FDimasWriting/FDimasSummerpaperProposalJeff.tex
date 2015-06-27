@@ -1,0 +1,191 @@
+% !TeX spellcheck = en_GB
+\documentclass[english, 3p]{elsarticle}
+\usepackage{csvsimple}
+\usepackage[T1]{fontenc}
+\usepackage{subfig}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{fixltx2e}
+\usepackage{natbib}
+\biboptions{comma,authoryear, square}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{eucal}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{lscape}
+\usepackage{verbatim}
+\usepackage{graphicx}
+
+
+%% Because html converters don't know tabularnewline
+\providecommand{\tabularnewline}{\\}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\usepackage{multirow}
+\newcommand{\sr}{\rule[-0.45cm]{0pt}{0.9cm}}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{etex}
+ \usepackage[nodots]{numcompress}
+\usepackage[euler-digits]{eulervm}% For Tables created by estout
+\newcommand{\sym}[1]{#1} % for symbols in Table
+\usepackage{siunitx}\sisetup{ detect-mode, 
+          group-digits            = false ,
+          input-signs             = ,
+          input-symbols           = ()[]-+* , % specifying \sym here does not work
+          input-open-uncertainty  = ,
+          input-close-uncertainty = ,
+          table-align-text-post   = false 
+        }
+
+\def\xxx#1{%
+  \bgroup\uccode`\~\expandafter`\string#1%
+  \uppercase{\egroup\edef~{\noexpand\text\string#1}}%
+  \mathcode\expandafter`\string#1"8000 }
+\def\textsymbols{\xxx[\xxx]\xxx(\xxx)\xxx*}
+
+\makeatother
+\usepackage[linkcolor=black]{hyperref}
+
+\usepackage{babel}
+\usepackage{graphicx}
+\usepackage{comment}
+\begin{document}
+
+\title{Do institutional lenders price borrowers bellwetherness?}
+
+
+
+\author{Francisco Dimas Pena Romera}
+
+\address{Accounting PhD Student}
+\address{Kenan-Flagler Business School, University of North Carolina, Chapel Hill, NC 27599-3490, USA}
+\address{Jeffs Seminar 2015 - Research proposal}
+
+
+
+\pagebreak
+
+
+\begin{abstract}
+	Prior literature argues that the onset of Credit Default Swaps (CDSs)
+	trading has diminished the monitoring activity of banks on the underlying
+	firms. Banks that do not hold direct credit exposure have reduced
+	incentives to perform ex-post monitoring activities. The CDS market
+	enhances the ability of banks to lay off their credit exposure and
+	reduce their monitoring. We argue that other external capital providers
+	who free ride their monitoring on banks, will foresee this shock to
+	bank monitoring incentives and they will thus increase their required
+	returns to debt and introduce tighter covenants into debt contracts
+	as a form of insurance. We hypothesize and find that managers/owners of affected
+	firms anticipate this effect and signal their commitment not
+	to expropriate providers of debt-capital by shifting to more conservative
+	reporting practices. The increases in conditional conservatism found for firms affected by CDS introduction are incremental to increases in conservatism found in matched control firms with similar contracting pressures. 
+\end{abstract}
+
+
+
+\maketitle
+
+ 
+
+\section{Introduction} 
+
+
+Three key papers:
+
+\begin{itemize}
+	
+	\item \cite[\textit{The New York Times}]{NYTOct2006}, \cite[\textit{The Wall Street Journal}]{WSJ2010}
+	\item \cite{Bushman2014}
+	\item \cite{Massoud2011}
+	
+	\item \cite{Ivashina2011a} documents that institutional investors trade on private information obtained from participating in lending syndicates. The paper identifies institutional investors that attend private conference calls during loan amendments, and shows that such investors obtain a 5.1\% annualized abnormal return on trades from stocks of companies with loan amendments, outperforming institutions that were not part of the conference calls by 5.3\%.
+	
+	\item \cite{Bushman2010} classifies borrowers into two portfolios: a "fast dissemination of confidential information" portfolio versus a "slow dissemination of confidential information" portfolio. The paper shows that the speed of price discovery in a borrowers stock is faster for borrowers in the fast information dissemination portfolio, only when institutional investors are part of the loan syndicate. This suggests that non bank institutional investors are trading on private information obtained from the loan syndicate, and thus impounding this confidential information more rapidly in prices.
+	
+	\item \cite{Tseng2014W} studies disclosure practices of bellwether firms. Bellwether firms are defined as firms "whose performance speaks to the economy as a whole, or to large sectors of the economy" (Gray Jr., 2010). The paper aims at resolving the question of whether disclosure practices of bellwether firms are different from those of non-bellwether firms. On the one hand, if investors can obtain useful information about bellwether firms from other sources (such as government announcements about macroeconomic trends), this could reduce the demand for bellwether disclosures (substitution effect). Alternatively, if bellwether disclosures provide useful information about many other firms in the economy, investors may use bellwether disclosures to value other firms in the economy, and this additional usefulness may lead to increased demand for bellwether disclosure. The paper finds that bellwether firms disclose less frequently than non-bellwether firms, consistent with a substitution effect from other sources of macro information. However, for the subsample of firms with an ownership structure characterized by investors holding diversified portfolios, bellwethers are found to disclose more frequently than non-bellwethers.  	
+\end{itemize}
+
+Some thoughts (that came out of brainstorming with Donny after I presented \cite{Tseng2014W} in Robert's seminar):
+\begin{itemize}
+\item Both \cite{Ivashina2011} and \cite{Bushman2010} focus on insider trading behaviour of institutional debt syndicate participants that use confidential information from the debt syndicate, to trade in the stocks of their borrowers. However, although in a different setting, \cite{Tseng2014W} makes a very interesting point: timely insider syndicate information is not only useful to value the borrowing firm itself, but also to value firms whose performance is affected by the borrowing firm. Hedge funds that participate in debt syndicates, can use confidential information of a borrowing firm in order to place timely trades of "connected" firms. This is an issue that, to the best of my knowledge, has not been studied in the literature. Moreover, these trading patterns are likely to be less suspicious than those involving the borrowers' stock itself. 
+
+\item Are non bank institutional participants in the debt syndicate targeting highly connected firms (bellwhethers?), whose insider information is particularly valuable, when they chose to enter the debt syndicated market? If so, what type of connectivity is valuable (Could it be that they are targeting a specific type of highly connected firms, ie. those firms whose "bad news" trigger a contagion effect?). 
+\item Is this connectivity priced in the form of lower spreads? 
+
+\end{itemize}
+
+
+\section{Meeting 23rd Feb 2015} 
+
+\begin{itemize}
+\item Before committing too much time to a "risky" project we would like to see that the descriptives support that institutional investors that participate in the debt syndicated market target a specific set of distinct firms. Table \ref{fig: instdescript} shows descriptive statistics for loans and borrowers with institutional investors in their syndicate versus those without institutional investors. It seems like, on average, institutional investors are participating in larger deals, of longer average maturities, from safer borrowers that are more levered, have higher Market to Book ratios, but from firms with lower market capitalization. 
+
+\item Figures 	\ref{fig: indust17}  and 	\ref{fig: indust30} show the number of loans that have institutional investors in the syndicate. As well as those that don't. Ideally, we would want to see that institutional investors are over represented in the most central industries in the economy. Figure \ref{fig: indust17} uses fama french 17 industry groupings, and shows institutional investors have a higher proportion of their loans (relative to non-institutional investors) in:  Food, Consumer Durables, Chemicals, Drugs, Fabricated Products, Automobiles, and Other. Similarly, \ref{fig: indust30} uses Fama French 30 industry classifications since 47.6 percent of institutional loans fell in the category "Other" for the 17 industry classification. We observe that insitutional investors direct a higher proportion of their loans (relative to loans without institutional investors) to: Beer and Liquor, Recreation, Printing and Publishing, Healthcare, Medical Equipment and Pharmaceuticals, Chemicals, Electrical Equipment, Automobiles, Coal, Communication, Personal and Business Services, Business Supplies and Shipping Containers. It must be noted that some of these differences are quite small. 
+
+\item A key issue is how to determine what the "central" industries in the economy are. I skimmed through \cite{Aobdia2014} that uses inter-industry trade flows in order to measure which industries are hubs in the network. I still need to read this thoroughly to see if there is something useful to be borrowed from this paper's methodology. 
+
+\item I also skimmed through \cite{Bushman2014} in order to get an idea on how they have identified the lender type of institution from DealScan data. I've noticed 2 important things from Robert's paper: 1) The paper goes through a very serious sample trimming (it starts with 42,333 facilities from DealScan, but end with a final sample of just 6,663. They eliminate many facilities claiming that there is some error in DealScan by which the database is misclassifying facilities that aren't new loans but amended or restated facilities instead). If this is the case, this could potentially affect the inferences from our project on CDSs and loan announcement returns  as well, since we would be computing abnormal returns on loan announcements that aren't actual new loans. 2) There is a more detailed table in DealScan that will help me better classify institutional lenders. Although in Robert's paper, they ultimately go through a manual search through Capital IQ and OneSource to read business descriptions and identify hedge funds (I guess this will take a non trivial amount of time).
+\item Also, I've noticed that most of what I've been thinking about applies directly to Roberts paper. Essentially, changing their "Transparency" construct for a "Centrality / Bellwetherness" one and running the exact same tests (Are more central firms paying lower spreads?, is the effect of centrality on spreads particularly strong when hedge funds and private equity firms are part of the syndication?). Again, the key distinction is that no one in the literature seems to be looking at whether one firms insider information is useful to value other firms in the sector / the economy. 
+
+
+
+\end{itemize}
+
+ 
+
+
+
+
+
+\setcounter{figure}{0}
+
+
+\section*{Appendix A - Tables and figures}
+
+\begin{landscape}
+
+\begin{table}[htbp]
+	\footnotesize 
+	\begin{center}
+	\caption{Descriptives Instititional vs non Institutional}
+	\label{fig: instdescript}
+	\input{table2.tex}	
+	\end{center}
+\end{table}
+
+
+
+\begin{table}[htbp]
+	\caption{Instituional vs Non instituional loans by industry}
+	\label{fig: indust17}
+	\input{industryfreqs.txt}	
+\end{table}
+\end{landscape}
+
+
+\begin{landscape}
+	
+	\begin{table}[htbp]
+		\caption{Instituional vs Non instituional loans by industry}
+		\input{industry30freqs.txt}	
+		\label{fig: indust30}
+	\end{table}
+\end{landscape}
+
+
+\pagebreak
+\section*{References}
+\bibliographystyle{chicago}
+\bibliography{Comps_SummerPaper}
+\pagebreak
+
+
+\pagebreak
+
+
+
+
+
+\end{document}
