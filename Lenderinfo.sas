@@ -237,6 +237,18 @@ run;
 
 
 
+
+*check these duplicates!;
+
+data _temp;
+	set _facilitydata;
+	keep permno gvkey datadate fdatadate hasinst;
+run;
+
+proc sort data=_temp nodupkey;
+	by permno;
+run;
+
 /*
 
 
