@@ -20,6 +20,7 @@ OUTPUT:
 %include 'C:\ado\plus\s\stata_wrapper.sas';
 *I define libraries in which to locate and extract rawdata. all these directories will be deleted at the end of the project;
 libname rawdeal 'C:\Users\penarome\Desktop\Academic\RAW DATABASES\RDealScan_2015' ;
+libname rawcomp 'C:\Users\penarome\Desktop\Academic\RAW DATABASES\RCompustat_2015' ;
 
 *I define my local permanent libraries in which I will modify and update outputs.;
 libname dimmod 'C:\Users\penarome\Desktop\Academic\UNCFDimSummer\modified' ;
@@ -170,8 +171,63 @@ proc sort data=_facilitydata nodupkey;
 	by facilityid;
 run;
 
-*I generate a sata file dimmod.lendersinfo as my lendersinfo stata file;
 
+
+*for the bellwether measures I will use crsp monthly data;
+
+*from the _facilitydata file I keep identifiers and deal active date;
+data _crspbell;
+	set _facilitydata;
+	loanmonth= intnx('month',dealactivedate,-1,'end');
+	keep permno gvkey prcc_c fdatadate loanmonth dealactivedate FacilityID;
+	format loanmonth date9.;
+run;
+
+
+*i merge the above identifiers with raw crsp monthly data
+i keep full crsp monthly, and only merge facilities in the month of the deal avtive date;
+proc sql; 
+create table _crspbell1 
+as select a.*, b.*
+from rawcrsp.msf a left join _crspbell b 
+on a.permno=b.permno
+order by permno, date;
+quit;
+
+
+*get sic codes from previously generated compustat crsp universe file;
+
+data _sicgvkeypermno;
+	set dimmod.compcrsp;
+	keep permno gvkey sic;
+run;
+
+proc sort data=_sicgvkeypermno nodupkey;
+	by permno;
+run;
+
+proc sql ;
+       create table _crspbell1 as
+       select A. *, B.SIC
+       from _crspbell1 A inner join _sicgvkeypermno B
+       on (A.permno=B.permno)
+       order by permno, date;
+quit;
+
+
+
+
+*I generate a sata file dimmod.crspbell as my crspbell stata file;
+proc export 
+data= work._crspbell1
+dbms=dta
+outfile='C:\Users\penarome\Desktop\Academic\UNCFDimSummer\modified\_crspbell.dta'
+replace;
+run;
+
+
+
+*I generate a sata file dimmod.lendersinfo as my lendersinfo stata file;
 proc export 
 data= work._facilitydata
 dbms=dta
